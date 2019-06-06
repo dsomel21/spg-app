@@ -12,9 +12,11 @@ aws.config.update({
 })
 
 const s3 = new aws.S3()
-const response = s3.listObjectsV2({
-  Bucket: 'spg-audio'
-})
-
-console.log(response.response)
-debugger
+const response = s3
+  .listObjectsV2({
+    Bucket: 'spg-audio'
+  })
+  .promise()
+  .then(function (res) {
+    console.log(res.Contents)
+  })
