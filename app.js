@@ -1,6 +1,7 @@
 const express = require('express')
 const aws = require('aws-sdk')
 const mongoose = require('mongoose')
+const dotenv = require('dotenv').config()
 
 // App
 const app = express()
