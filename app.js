@@ -2,9 +2,12 @@ const express = require('express')
 const aws = require('aws-sdk')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv').config()
+const bodyParser = require('body-parser')
+const cors = require('cors')
 
 // App
 const app = express()
+
 mongoose
   .connect(
     process.env.DATABASE,
@@ -20,29 +23,32 @@ mongoose
 // Import Routes
 const trackRoutes = require('./routes/track')
 
+// So you can do req.body
+app.use(bodyParser.urlencoded())
+app.use(bodyParser.json())
 // Use Imported Routes
 app.use('/api/v1/', trackRoutes)
 
-app.get('/spg', (req, res) => {
-  // This enables promises in AWS SDK
-  console.log(process.env)
-  aws.config.setPromisesDependency()
-  aws.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: 'us-east-1'
-  })
+// app.get('/spg', (req, res) => {
+//   // This enables promises in AWS SDK
+//   console.log(process.env)
+//   aws.config.setPromisesDependency()
+//   aws.config.update({
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     region: 'us-east-1'
+//   })
 
-  const s3 = new aws.S3()
-  const response = s3
-    .listObjectsV2({
-      Bucket: 'spg-audio'
-    })
-    .promise()
-    .then(function (files) {
-      return files.Contents
-    })
-})
+//   const s3 = new aws.S3()
+//   const response = s3
+//     .listObjectsV2({
+//       Bucket: 'spg-audio'
+//     })
+//     .promise()
+//     .then(function (files) {
+//       return files.Contents
+//     })
+// })
 
 app.get('/', (req, res) => res.json({ success: true, message: 'Welcome' }))
 
